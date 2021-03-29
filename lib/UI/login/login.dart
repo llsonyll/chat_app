@@ -60,16 +60,17 @@ class Login extends StatelessWidget {
                       onTap: () {},
                       child: Container(
                         decoration: BoxDecoration(
-                            color: Colors.blue[600],
-                            borderRadius: BorderRadius.circular(25.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                offset: Offset(2.5, 2.5),
-                                spreadRadius: 0.2,
-                                blurRadius: 5.0,
-                              )
-                            ]),
+                          color: Colors.blue[600],
+                          borderRadius: BorderRadius.circular(25.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(2.5, 2.5),
+                              spreadRadius: 0.2,
+                              blurRadius: 5.0,
+                            )
+                          ],
+                        ),
                         child: TextButton(
                           onPressed: () {
                             pushReplacementToPage(context, Home());
