@@ -1,131 +1,60 @@
-import 'package:chat_app/UI/register/register.dart';
-import 'package:chat_app/UI/widgets/custom_text_field.dart';
-import 'package:chat_app/navigator_utils.dart';
+import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter/material.dart';
+
+final usuarios = [
+  Usuario(
+      uid: '1', email: 'usuario1@test.com', name: 'usuario1', online: false),
+  Usuario(
+      uid: '2', email: 'usuario2@test.com', name: 'usuario2', online: false),
+  Usuario(uid: '3', email: 'usuario3@test.com', name: 'usuario3', online: true),
+];
 
 class Home extends StatelessWidget {
   const Home({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xffF2F2F2),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 50.0),
-            height: size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Column(
-                  children: [
-                    Image.asset(
-                      'assets/tag_chat.png',
-                      height: 120,
-                    ),
-                    const SizedBox(height: 10.0),
-                    Text(
-                      'Messenger',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 24.0,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                // const SizedBox(height: 60.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    CustomTextField(
-                      hint: 'Correo',
-                      icon: Icons.mail_outline,
-                      controller: null,
-                    ),
-                    const SizedBox(height: 20.0),
-                    CustomTextField(
-                      hint: 'Contraseña',
-                      icon: Icons.lock_outline,
-                      controller: null,
-                    ),
-                    const SizedBox(height: 30.0),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.blue[600],
-                            borderRadius: BorderRadius.circular(25.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                offset: Offset(2.5, 2.5),
-                                spreadRadius: 0.2,
-                                blurRadius: 5.0,
-                              )
-                            ]),
-                        child: TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'Ingresar',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16.0,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // const SizedBox(height: 50.0),
-
-                // const SizedBox(height: 30.0),
-                Column(
-                  children: [
-                    Text(
-                      'No tienes Cuenta?',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w400, color: Colors.black54),
-                    ),
-                    const SizedBox(height: 5.0),
-                    InkWell(
-                      onTap: () {
-                        pushToPage(context, Register());
-                      },
-                      child: Text(
-                        'Crea una ahora!',
-                        style: TextStyle(
-                          color: Colors.blue[600],
-                          fontWeight: FontWeight.w800,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Text(
-                    'Terminos y condiciones de uso',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black54,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text('Usuario'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {},
           ),
-        ),
+        ],
       ),
+      body: ListView.separated(
+        physics: BouncingScrollPhysics(),
+        itemCount: usuarios.length,
+        separatorBuilder: (_, __) => Divider(),
+        itemBuilder: (context, index) {
+          final Usuario user = usuarios[index];
+          return UsuarioListTile(user: user);
+        },
+      ),
+    );
+  }
+}
+
+class UsuarioListTile extends StatelessWidget {
+  const UsuarioListTile({
+    Key key,
+    @required this.user,
+  }) : super(key: key);
+
+  final Usuario user;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        child: Icon(Icons.person),
+      ),
+      title: Text(user.name),
+      subtitle: Text(user.email),
+      trailing:
+          Icon(Icons.circle, color: user.online ? Colors.green : Colors.red),
     );
   }
 }

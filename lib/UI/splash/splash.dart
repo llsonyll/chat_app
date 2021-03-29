@@ -1,4 +1,4 @@
-import 'package:chat_app/UI/home/home.dart';
+import 'package:chat_app/UI/login/login.dart';
 import 'package:chat_app/UI/register/register.dart';
 import 'package:chat_app/navigator_utils.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class Splash extends StatelessWidget {
       child: BlocListener<SplashCubit, LogState>(
         listener: (context, snapshot) {
           if (snapshot == LogState.no_user) {
-            pushReplacementToPage(context, Home());
+            pushReplacementToPage(context, Login());
           } else if (snapshot == LogState.new_user) {
             pushReplacementToPage(context, Register());
           } else if (snapshot == LogState.existing_user) {
