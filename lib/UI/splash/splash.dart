@@ -1,3 +1,4 @@
+// import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/login/login.dart';
 import 'package:chat_app/UI/register/register.dart';
 import 'package:chat_app/navigator_utils.dart';
@@ -21,6 +22,7 @@ class Splash extends StatelessWidget {
             pushReplacementToPage(context, Register());
           } else if (snapshot == LogState.existing_user) {
             //
+            // pushReplacementToPage(context, Home());
           }
         },
         child: Scaffold(

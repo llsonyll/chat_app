@@ -1,5 +1,5 @@
 import 'package:chat_app/UI/chat_view/chat_page.dart';
-import 'package:chat_app/domain/models/usuario.dart';
+import 'package:chat_app/UI/login/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +15,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UsuariosListCubit()..init(),
-      child: BlocConsumer<UsuariosListCubit, List<Usuario>>(
+      child: BlocConsumer<UsuariosListCubit, List<String>>(
         listener: (context, snapshot) {},
         builder: (context, snapshot) {
           return Scaffold(
@@ -24,7 +24,10 @@ class Home extends StatelessWidget {
               actions: [
                 IconButton(
                   icon: Icon(Icons.exit_to_app),
-                  onPressed: () {},
+                  onPressed: () {
+                    // LogOut
+                    pushReplacementToPage(context, Login());
+                  },
                 ),
               ],
             ),
@@ -60,7 +63,7 @@ class Home extends StatelessWidget {
                 itemCount: snapshot.length,
                 separatorBuilder: (_, __) => Divider(),
                 itemBuilder: (context, index) {
-                  final Usuario user = snapshot[index];
+                  final String user = snapshot[index];
                   return UsuarioListTile(user: user);
                 },
               ),
@@ -78,7 +81,7 @@ class UsuarioListTile extends StatelessWidget {
     @required this.user,
   }) : super(key: key);
 
-  final Usuario user;
+  final String user;
 
   @override
   Widget build(BuildContext context) {
@@ -86,10 +89,9 @@ class UsuarioListTile extends StatelessWidget {
       leading: CircleAvatar(
         child: Icon(Icons.person),
       ),
-      title: Text(user.name),
-      subtitle: Text(user.email),
-      trailing:
-          Icon(Icons.circle, color: user.online ? Colors.green : Colors.red),
+      title: Text(user),
+      subtitle: Text('User Email'),
+      trailing: Icon(Icons.circle, color: Colors.green),
       onTap: () {
         pushToPage(context, ChatPage());
       },

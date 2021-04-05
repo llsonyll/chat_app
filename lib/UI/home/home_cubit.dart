@@ -1,34 +1,18 @@
-import 'package:chat_app/domain/models/usuario.dart';
+// import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class UsuariosListCubit extends Cubit<List<Usuario>> {
+class UsuariosListCubit extends Cubit<List<String>> {
   UsuariosListCubit() : super([]);
 
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
   void init() {
-    state.add(
-      Usuario(
-          uid: '1',
-          email: 'usuario1@test.com',
-          name: 'usuario1',
-          online: false),
-    );
-    state.add(
-      Usuario(
-          uid: '2',
-          email: 'usuario2@test.com',
-          name: 'usuario2',
-          online: false),
-    );
-    state.add(
-      Usuario(
-          uid: '3', email: 'usuario3@test.com', name: 'usuario3', online: true),
-    );
+    state.add('usuario 1');
+    state.add('usuario 2');
 
-    emit(List<Usuario>.from(state));
+    emit(List<String>.from(state));
   }
 
   Future<void> onRefresh() async {
