@@ -15,8 +15,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => UsuariosListCubit()..init(),
-      child: BlocConsumer<UsuariosListCubit, List<String>>(
-        listener: (context, snapshot) {},
+      child: BlocBuilder<UsuariosListCubit, List<String>>(
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(

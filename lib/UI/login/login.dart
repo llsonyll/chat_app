@@ -2,6 +2,7 @@
 import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/register/register.dart';
 import 'package:chat_app/UI/widgets/custom_text_field.dart';
+import 'package:chat_app/UI/widgets/mostrarAlerta.dart';
 import 'package:chat_app/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,12 +20,10 @@ class Login extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginStatus>(
         listener: (context, snapshot) {
           if (snapshot == LoginStatus.Success) {
-            pushReplacementToPage(
-              context,
-              Home(),
-            );
+            pushReplacementToPage(context, Home());
           } else if (snapshot == LoginStatus.Error) {
             print('Error Usuario');
+            mostrarAlerta(context, 'Usuario Invalido', SizedBox());
           }
         },
         builder: (context, snapshot) {
@@ -94,6 +93,7 @@ class Login extends StatelessWidget {
                               child: TextButton(
                                 onPressed: () {
                                   // pushReplacementToPage(context, Home());
+                                  FocusScope.of(context).unfocus();
                                   context.read<LoginCubit>().login();
                                 },
                                 child: Text(
