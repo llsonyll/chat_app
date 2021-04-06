@@ -1,10 +1,10 @@
-import 'package:chat_app/UI/login/login.dart';
-import 'package:chat_app/UI/widgets/custom_text_field.dart';
-import 'package:chat_app/UI/widgets/mostrarAlerta.dart';
-import 'package:chat_app/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../navigator_utils.dart';
+import '../login/login.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/mostrarAlerta.dart';
 import 'register_cubit.dart';
 
 class Register extends StatelessWidget {

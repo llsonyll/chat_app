@@ -1,13 +1,13 @@
-import 'package:chat_app/UI/chat_view/chat_page.dart';
-import 'package:chat_app/UI/login/auth_cubit.dart';
-import 'package:chat_app/UI/login/login.dart';
-import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../domain/models/usuario.dart';
 import '../../navigator_utils.dart';
+import '../chat_view/chat_page.dart';
+import '../login/auth_cubit.dart';
+import '../login/login.dart';
 import 'home_cubit.dart';
 
 class Home extends StatelessWidget {

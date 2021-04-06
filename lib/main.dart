@@ -1,7 +1,7 @@
-import 'package:chat_app/UI/login/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'UI/login/auth_cubit.dart';
 // import 'UI/home/home.dart';
 import 'UI/splash/splash.dart';
 
