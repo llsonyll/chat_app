@@ -1,5 +1,7 @@
 import 'package:chat_app/UI/chat_view/chat_page.dart';
+import 'package:chat_app/UI/login/auth_cubit.dart';
 import 'package:chat_app/UI/login/login.dart';
+import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,18 +15,20 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final UsuarioDb user = context.read<AuthCubit>().user;
     return BlocProvider(
       create: (context) => UsuariosListCubit()..init(),
       child: BlocBuilder<UsuariosListCubit, List<String>>(
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Usuario'),
+              title: Text('Usuario: ${user.nombre ?? 'Usuario'}'),
               actions: [
                 IconButton(
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () {
                     // LogOut
+                    context.read<AuthCubit>().quitarToken();
                     pushReplacementToPage(context, Login());
                   },
                 ),

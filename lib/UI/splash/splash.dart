@@ -21,7 +21,6 @@ class Splash extends StatelessWidget {
           } else if (snapshot == LogState.new_user) {
             pushReplacementToPage(context, Register());
           } else if (snapshot == LogState.existing_user) {
-            //
             // pushReplacementToPage(context, Home());
           }
         },
