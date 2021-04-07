@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                   icon: Icon(Icons.exit_to_app),
                   onPressed: () {
                     // LogOut
-                    context.read<AuthCubit>().quitarToken();
+                    context.read<AuthCubit>().logout();
                     pushReplacementToPage(context, Login());
                   },
                 ),

@@ -1,6 +1,6 @@
 // import 'package:chat_app/UI/home/home.dart';
+import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/login/login.dart';
-import 'package:chat_app/UI/register/register.dart';
 import 'package:chat_app/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,15 +13,13 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SplashCubit()..init(),
+      create: (context) => SplashCubit()..init(context),
       child: BlocListener<SplashCubit, LogState>(
         listener: (context, snapshot) {
-          if (snapshot == LogState.no_user) {
+          if (snapshot == LogState.InvalidToken) {
             pushReplacementToPage(context, Login());
-          } else if (snapshot == LogState.new_user) {
-            pushReplacementToPage(context, Register());
-          } else if (snapshot == LogState.existing_user) {
-            // pushReplacementToPage(context, Home());
+          } else if (snapshot == LogState.ValidToken) {
+            pushReplacementToPage(context, Home());
           }
         },
         child: Scaffold(

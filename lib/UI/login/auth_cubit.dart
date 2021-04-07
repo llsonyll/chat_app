@@ -15,7 +15,7 @@ class AuthCubit extends Cubit<AuthState> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   UsuarioDb usuario;
-  FlutterSecureStorage tokenStorage = FlutterSecureStorage();
+  final _storage = new FlutterSecureStorage();
 
   AuthState get currentState => state;
   UsuarioDb get user => usuario;
@@ -46,18 +46,48 @@ class AuthCubit extends Cubit<AuthState> {
 
   //Obtener token
   Future<String> getToken() async {
-    final _store = new FlutterSecureStorage();
-    final token = await _store.read(key: 'token');
+    final _storage = new FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
     return token;
+  }
+
+  //Quitar token
+  Future borrarToken() async {
+    final _storage = new FlutterSecureStorage();
+    return await _storage.delete(key: 'token');
   }
 
   //Guardar token
   Future guardarToken(String token) async {
-    return await tokenStorage.write(key: 'token', value: token);
+    return await _storage.write(key: 'token', value: token);
   }
 
-  //Quitar token
-  Future quitarToken() async {
-    return await tokenStorage.delete(key: 'token');
+  Future logout() async {
+    await _storage.delete(key: 'token');
+  }
+
+  Future<bool> isTokenValid() async {
+    final token = await this._storage.read(key: 'token');
+    final url = Uri.parse('${Environment.apiUrl}/login/renew');
+    final resp = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-token': token,
+      },
+    );
+
+    if (resp.statusCode == 200) {
+      final loginResponse = userFromJson(resp.body);
+      this.usuario = loginResponse.usuarioDb;
+      await this.guardarToken(token);
+      return true;
+    } else {
+      final respBody = jsonDecode(resp.body);
+      print(respBody);
+      this.logout();
+      return false;
+      // return respBody['msg'];
+    }
   }
 }
