@@ -1,4 +1,6 @@
+import 'package:chat_app/UI/auth_cubit.dart';
 import 'package:chat_app/enviroment.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -16,7 +18,8 @@ class SocketService extends Cubit<ServerStatus> {
   IO.Socket get socket => this._socket;
   Function get emitir => this._socket.emit;
 
-  void connect() {
+  void connect(BuildContext context) async {
+    final token = await context.read<AuthCubit>().getToken();
     // Dart client
     this._socket = IO.io(
         Environment.socketUrl,
@@ -24,6 +27,7 @@ class SocketService extends Cubit<ServerStatus> {
             .setTransports(['websocket'])
             .enableAutoConnect()
             .enableForceNew()
+            .setExtraHeaders({'x-token': token})
             .build());
 
     this._socket.on('connect', (_) {

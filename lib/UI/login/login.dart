@@ -20,7 +20,7 @@ class Login extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, snapshot) {
         if (snapshot == AuthState.Success) {
-          socket.connect();
+          socket.connect(context);
           pushReplacementToPage(context, Home());
         } else if (snapshot == AuthState.Error) {
           mostrarAlerta(context, 'Usuario Invalido', SizedBox());

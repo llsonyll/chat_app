@@ -28,6 +28,31 @@ class User {
       };
 }
 
+ListaUsuarios listaUsuariosFromJson(String str) =>
+    ListaUsuarios.fromJson(json.decode(str));
+String listaUsuariosToJson(ListaUsuarios data) => json.encode(data.toJson());
+
+class ListaUsuarios {
+  ListaUsuarios({
+    this.ok,
+    this.usuarios,
+  });
+
+  bool ok;
+  List<UsuarioDb> usuarios;
+
+  factory ListaUsuarios.fromJson(Map<String, dynamic> json) => ListaUsuarios(
+        ok: json["ok"],
+        usuarios: List<UsuarioDb>.from(
+            json["usuarios"].map((x) => UsuarioDb.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "ok": ok,
+        "usuarios": List<dynamic>.from(usuarios.map((x) => x.toJson())),
+      };
+}
+
 class UsuarioDb {
   UsuarioDb({
     this.online,

@@ -1,18 +1,38 @@
 // import 'package:chat_app/domain/models/usuario.dart';
+import 'package:chat_app/UI/auth_cubit.dart';
+import 'package:chat_app/domain/models/usuario.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:http/http.dart' as http;
 
-class UsuariosListCubit extends Cubit<List<String>> {
-  UsuariosListCubit() : super([]);
+import '../../enviroment.dart';
+
+class UsuariosListCubit extends Cubit<List<UsuarioDb>> {
+  UsuariosListCubit(this.context) : super([]);
+
+  final BuildContext context;
 
   RefreshController refreshController =
       RefreshController(initialRefresh: false);
 
-  void init() {
-    state.add('usuario 1');
-    state.add('usuario 2');
+  void init() async {
+    // Llenar los datos de la lista...
+    final url = Uri.parse('${Environment.apiUrl}/usuarios');
+    try {
+      final resp = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-token': await context.read<AuthCubit>().getToken(),
+        },
+      );
 
-    emit(List<String>.from(state));
+      final ListaUsuarios respuesta = listaUsuariosFromJson(resp.body);
+      emit(respuesta.usuarios);
+    } catch (e) {
+      print('error');
+    }
   }
 
   Future<void> onRefresh() async {

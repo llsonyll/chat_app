@@ -1,9 +1,9 @@
+import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../../domain/models/usuario.dart';
 import '../../navigator_utils.dart';
 import '../chat_view/chat_page.dart';
 import '../auth_cubit.dart';
@@ -16,37 +16,28 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UsuarioDb user = context.read<AuthCubit>().user;
+    final auth = context.read<AuthCubit>();
     final socket = context.read<SocketService>();
     return BlocProvider(
-      create: (context) => UsuariosListCubit()..init(),
-      child: BlocBuilder<UsuariosListCubit, List<String>>(
+      create: (context) => UsuariosListCubit(context)..init(),
+      child: BlocBuilder<UsuariosListCubit, List<UsuarioDb>>(
         builder: (context, snapshot) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Usuario: ${user.nombre ?? 'Usuario'}'),
+              leading: IconButton(
+                icon: Icon(Icons.exit_to_app),
+                onPressed: () {
+                  // LogOut
+                  context.read<AuthCubit>().logout();
+                  socket.disconnect();
+                  pushReplacementToPage(context, Login());
+                },
+              ),
+              title: Text('Usuario: ${auth.user.nombre ?? 'Usuario'}'),
               actions: [
-                IconButton(
-                  icon: Icon(Icons.exit_to_app),
-                  onPressed: () {
-                    // LogOut
-                    context.read<AuthCubit>().logout();
-                    socket.disconnect();
-                    pushReplacementToPage(context, Login());
-                  },
-                ),
                 BlocBuilder<SocketService, ServerStatus>(
-                  builder: (context, snasphot) {
-                    final ServerStatus state = snasphot;
-                    return Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: state == ServerStatus.Online
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                    );
+                  builder: (context, serverState) {
+                    return ServerState(estado: serverState);
                   },
                 ),
               ],
@@ -83,7 +74,7 @@ class Home extends StatelessWidget {
                 itemCount: snapshot.length,
                 separatorBuilder: (_, __) => Divider(),
                 itemBuilder: (context, index) {
-                  final String user = snapshot[index];
+                  final UsuarioDb user = snapshot[index];
                   return UsuarioListTile(user: user);
                 },
               ),
@@ -101,7 +92,7 @@ class UsuarioListTile extends StatelessWidget {
     @required this.user,
   }) : super(key: key);
 
-  final String user;
+  final UsuarioDb user;
 
   @override
   Widget build(BuildContext context) {
@@ -109,12 +100,61 @@ class UsuarioListTile extends StatelessWidget {
       leading: CircleAvatar(
         child: Icon(Icons.person),
       ),
-      title: Text(user),
-      subtitle: Text('User Email'),
-      trailing: Icon(Icons.circle, color: Colors.green),
+      title: Text(user.nombre),
+      subtitle: Text(user.email),
+      trailing:
+          Icon(Icons.circle, color: user.online ? Colors.green : Colors.red),
       onTap: () {
         pushToPage(context, ChatPage());
       },
+    );
+  }
+}
+
+class ServerState extends StatelessWidget {
+  const ServerState({Key key, @required this.estado}) : super(key: key);
+
+  final ServerStatus estado;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: CircleAvatar(
+        backgroundColor: Colors.purple,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            estado == ServerStatus.Online
+                ? Icon(
+                    Icons.check_circle,
+                    color: Colors.lightGreen,
+                    size: 18.0,
+                  )
+                : Icon(
+                    Icons.offline_bolt,
+                    color: Colors.red,
+                    size: 18.0,
+                  ),
+            estado == ServerStatus.Online
+                ? Text(
+                    'Online',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                      fontSize: 10.0,
+                    ),
+                  )
+                : Text(
+                    'Offline',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Colors.red,
+                    ),
+                  ),
+          ],
+        ),
+      ),
     );
   }
 }

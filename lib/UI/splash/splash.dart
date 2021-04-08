@@ -1,4 +1,3 @@
-// import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/login/login.dart';
 import 'package:chat_app/navigator_utils.dart';
@@ -14,6 +13,7 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final socket = context.read<SocketService>();
+    // final auth = context.read<AuthCubit>();
     return BlocProvider(
       create: (context) => SplashCubit()..init(context),
       child: BlocListener<SplashCubit, LogState>(
@@ -21,7 +21,7 @@ class Splash extends StatelessWidget {
           if (snapshot == LogState.InvalidToken) {
             pushReplacementToPage(context, Login());
           } else if (snapshot == LogState.ValidToken) {
-            socket.connect();
+            socket.connect(context);
             pushReplacementToPage(context, Home());
           }
         },
