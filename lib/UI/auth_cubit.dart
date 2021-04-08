@@ -20,6 +20,7 @@ class AuthCubit extends Cubit<AuthState> {
   AuthState get currentState => state;
   UsuarioDb get user => usuario;
 
+  // Login Method
   Future login() async {
     // this.currentState = LoginStatus.Loading;
     emit(AuthState.Validating);
@@ -37,35 +38,34 @@ class AuthCubit extends Cubit<AuthState> {
       final loginResponse = userFromJson(resp.body);
       guardarToken(loginResponse.token);
       this.usuario = loginResponse.usuarioDb;
-
       emit(AuthState.Success);
     } else {
       emit(AuthState.Error);
     }
   }
 
-  //Obtener token
-  Future<String> getToken() async {
-    final _storage = new FlutterSecureStorage();
-    final token = await _storage.read(key: 'token');
-    return token;
-  }
-
-  //Quitar token
-  Future borrarToken() async {
-    final _storage = new FlutterSecureStorage();
-    return await _storage.delete(key: 'token');
-  }
-
-  //Guardar token
-  Future guardarToken(String token) async {
-    return await _storage.write(key: 'token', value: token);
-  }
-
+  // Logout method
   Future logout() async {
     await _storage.delete(key: 'token');
   }
 
+  // Obtener token
+  Future<String> getToken() async {
+    final token = await _storage.read(key: 'token');
+    return token;
+  }
+
+  // Guardar token
+  Future guardarToken(String token) async {
+    return await _storage.write(key: 'token', value: token);
+  }
+
+  // Quitar token
+  Future borrarToken() async {
+    return await _storage.delete(key: 'token');
+  }
+
+  // Validate Token > to Home or Login
   Future<bool> isTokenValid() async {
     final token = await this._storage.read(key: 'token');
     final url = Uri.parse('${Environment.apiUrl}/login/renew');

@@ -1,13 +1,14 @@
 // import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/home/home.dart';
 import 'package:chat_app/UI/register/register.dart';
+import 'package:chat_app/UI/socket_io_cubit.dart';
 import 'package:chat_app/UI/widgets/custom_text_field.dart';
 import 'package:chat_app/UI/widgets/mostrarAlerta.dart';
 import 'package:chat_app/navigator_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'auth_cubit.dart';
+import '../auth_cubit.dart';
 
 class Login extends StatelessWidget {
   const Login({Key key}) : super(key: key);
@@ -15,9 +16,11 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final socket = context.read<SocketService>();
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, snapshot) {
         if (snapshot == AuthState.Success) {
+          socket.connect();
           pushReplacementToPage(context, Home());
         } else if (snapshot == AuthState.Error) {
           mostrarAlerta(context, 'Usuario Invalido', SizedBox());
@@ -89,6 +92,7 @@ class Login extends StatelessWidget {
                               onPressed: () {
                                 // pushReplacementToPage(context, Home());
                                 FocusScope.of(context).unfocus();
+
                                 context.read<AuthCubit>().login();
                               },
                               child: Text(

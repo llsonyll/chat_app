@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'UI/login/auth_cubit.dart';
+import 'UI/auth_cubit.dart';
 // import 'UI/home/home.dart';
+import 'UI/socket_io_cubit.dart';
 import 'UI/splash/splash.dart';
 
 void main() {
@@ -17,6 +18,7 @@ class Main extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => SocketService())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

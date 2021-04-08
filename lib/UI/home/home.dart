@@ -6,8 +6,9 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../domain/models/usuario.dart';
 import '../../navigator_utils.dart';
 import '../chat_view/chat_page.dart';
-import '../login/auth_cubit.dart';
+import '../auth_cubit.dart';
 import '../login/login.dart';
+import '../socket_io_cubit.dart';
 import 'home_cubit.dart';
 
 class Home extends StatelessWidget {
@@ -16,6 +17,7 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UsuarioDb user = context.read<AuthCubit>().user;
+    final socket = context.read<SocketService>();
     return BlocProvider(
       create: (context) => UsuariosListCubit()..init(),
       child: BlocBuilder<UsuariosListCubit, List<String>>(
@@ -29,7 +31,22 @@ class Home extends StatelessWidget {
                   onPressed: () {
                     // LogOut
                     context.read<AuthCubit>().logout();
+                    socket.disconnect();
                     pushReplacementToPage(context, Login());
+                  },
+                ),
+                BlocBuilder<SocketService, ServerStatus>(
+                  builder: (context, snasphot) {
+                    final ServerStatus state = snasphot;
+                    return Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: state == ServerStatus.Online
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                    );
                   },
                 ),
               ],

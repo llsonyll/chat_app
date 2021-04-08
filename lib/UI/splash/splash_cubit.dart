@@ -1,4 +1,4 @@
-import 'package:chat_app/UI/login/auth_cubit.dart';
+import 'package:chat_app/UI/auth_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
