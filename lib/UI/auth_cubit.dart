@@ -35,7 +35,7 @@ class AuthCubit extends Cubit<AuthState> {
         body: jsonEncode(data), headers: {'Content-Type': 'application/json'});
 
     if (resp.statusCode == 200) {
-      final loginResponse = userFromJson(resp.body);
+      final loginResponse = authQueryFromJson(resp.body);
       guardarToken(loginResponse.token);
       this.usuario = loginResponse.usuarioDb;
       emit(AuthState.Success);
@@ -78,7 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
 
     if (resp.statusCode == 200) {
-      final loginResponse = userFromJson(resp.body);
+      final loginResponse = authQueryFromJson(resp.body);
       this.usuario = loginResponse.usuarioDb;
       await this.guardarToken(token);
       return true;
