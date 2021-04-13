@@ -18,7 +18,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ChatCubit()..init(context)),
+        BlocProvider(create: (context) => ChatCubit(friendUser)..init(context)),
         BlocProvider(create: (context) => ChatServiceCubit()),
       ],
       child: BlocBuilder<ChatCubit, List<ChatMessage>>(
@@ -68,51 +68,57 @@ class ChatPage extends StatelessWidget {
               children: [
                 const SizedBox(height: 10.0),
                 Flexible(
-                  child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    // reverse: true,
-                    itemCount: chatList.length,
-                    itemBuilder: (__, i) {
-                      final ChatMessage mensaje = chatList[i];
-                      return mensaje.de == mainUser.uid
-                          ? Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    right: 10.0, top: 5.0, bottom: 5.0),
-                                padding: const EdgeInsets.all(5.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                                child: Text(
-                                  mensaje.mensaje,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Container(
-                                margin: const EdgeInsets.only(
-                                    left: 10.0, top: 5.0, bottom: 5.0),
-                                padding: const EdgeInsets.all(5.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                                child: Text(
-                                  mensaje.mensaje,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ),
-                            );
-                    },
-                  ),
+                  child: chatList.isEmpty
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          // reverse: true,
+                          itemCount: chatList.length,
+                          itemBuilder: (__, i) {
+                            final ChatMessage mensaje = chatList[i];
+                            return mensaje.de == mainUser.uid
+                                ? Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          right: 10.0, top: 5.0, bottom: 5.0),
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                      child: Text(
+                                        mensaje.mensaje,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 10.0, top: 5.0, bottom: 5.0),
+                                      padding: const EdgeInsets.all(5.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[300],
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                      child: Text(
+                                        mensaje.mensaje,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                          },
+                        ),
                 ),
                 BlocBuilder<ChatServiceCubit, String>(
                   builder: (context, inputController) {
