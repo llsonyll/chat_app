@@ -18,8 +18,8 @@ class UsuariosListCubit extends Cubit<List<UsuarioDb>> {
 
   void init() async {
     // Llenar los datos de la lista...
-    final url = Uri.parse('${Environment.apiUrl}/usuarios');
     try {
+      final url = Uri.parse('${Environment.apiUrl}/usuarios');
       final resp = await http.get(
         url,
         headers: {
@@ -38,6 +38,7 @@ class UsuariosListCubit extends Cubit<List<UsuarioDb>> {
   Future<void> onRefresh() async {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
+    this.init();
     // if failed,use refreshFailed()
     refreshController.refreshCompleted();
   }

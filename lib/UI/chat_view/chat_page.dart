@@ -1,17 +1,25 @@
 import 'package:chat_app/UI/chat_view/chat_cubit.dart';
 import 'package:chat_app/domain/models/chat_message.dart';
+import 'package:chat_app/domain/models/usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({Key key}) : super(key: key);
+  const ChatPage({
+    Key key,
+    @required this.mainUser,
+    @required this.friendUser,
+  }) : super(key: key);
+
+  final UsuarioDb mainUser;
+  final UsuarioDb friendUser;
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ChatCubit()..init()),
-        BlocProvider(create: (context) => InputCubit()),
+        BlocProvider(create: (context) => ChatCubit()..init(context)),
+        BlocProvider(create: (context) => ChatServiceCubit()),
       ],
       child: BlocBuilder<ChatCubit, List<ChatMessage>>(
         builder: (context, chatList) {
@@ -21,16 +29,37 @@ class ChatPage extends StatelessWidget {
               elevation: 2,
               backgroundColor: Color(0xffF2F2F2),
               centerTitle: true,
-              title: Column(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  CircleAvatar(child: Icon(Icons.person)),
-                  Text(
-                    'Nombre',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
+                  Column(
+                    children: [
+                      CircleAvatar(child: Icon(Icons.person)),
+                      Text(
+                        mainUser.nombre,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      CircleAvatar(
+                        child: Icon(Icons.person),
+                        backgroundColor: Colors.green,
+                      ),
+                      Text(
+                        friendUser.nombre,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -45,7 +74,7 @@ class ChatPage extends StatelessWidget {
                     itemCount: chatList.length,
                     itemBuilder: (__, i) {
                       final ChatMessage mensaje = chatList[i];
-                      return mensaje.uid == "123"
+                      return mensaje.de == mainUser.uid
                           ? Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
@@ -85,7 +114,7 @@ class ChatPage extends StatelessWidget {
                     },
                   ),
                 ),
-                BlocBuilder<InputCubit, String>(
+                BlocBuilder<ChatServiceCubit, String>(
                   builder: (context, inputController) {
                     return Container(
                       color: Color(0xffF2F2F2),
@@ -98,14 +127,16 @@ class ChatPage extends StatelessWidget {
                               Flexible(
                                 child: TextField(
                                   controller: context
-                                      .read<InputCubit>()
+                                      .read<ChatServiceCubit>()
                                       .inputController,
                                   decoration: InputDecoration.collapsed(
                                     hintText: 'Test',
                                     border: InputBorder.none,
                                   ),
                                   onChanged: (text) {
-                                    context.read<InputCubit>().leerMensaje();
+                                    context
+                                        .read<ChatServiceCubit>()
+                                        .leerMensaje();
                                   },
                                 ),
                               ),
@@ -121,11 +152,14 @@ class ChatPage extends StatelessWidget {
                                 onPressed: inputController.length > 0
                                     ? () {
                                         context
-                                            .read<InputCubit>()
+                                            .read<ChatServiceCubit>()
                                             .enviarMensaje();
-                                        context
-                                            .read<ChatCubit>()
-                                            .addMessage(inputController);
+                                        context.read<ChatCubit>().addMessage(
+                                              mainUser,
+                                              friendUser,
+                                              inputController,
+                                              context,
+                                            );
                                       }
                                     : null,
                               ),

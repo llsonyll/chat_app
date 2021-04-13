@@ -96,6 +96,7 @@ class UsuarioListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appUser = context.read<AuthCubit>().user;
     return ListTile(
       leading: CircleAvatar(
         child: Icon(Icons.person),
@@ -105,7 +106,10 @@ class UsuarioListTile extends StatelessWidget {
       trailing:
           Icon(Icons.circle, color: user.online ? Colors.green : Colors.red),
       onTap: () {
-        pushToPage(context, ChatPage());
+        pushToPage(
+          context,
+          ChatPage(mainUser: appUser, friendUser: user),
+        );
       },
     );
   }
